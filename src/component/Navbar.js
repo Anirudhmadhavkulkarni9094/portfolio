@@ -6,7 +6,7 @@ function Navbar() {
     const { darkMode, toggleTheme } = useContext(ThemeContext);
 
     return (
-        <div className={`flex justify-between p-5 shadow-md rounded items-center sticky w-full top-0 z-50 transition-all duration-500 ${!darkMode ? 'bg-gray-900 text-gray-200 border-gray-800' : 'bg-white text-gray-900 border-gray-300'}`}>
+        <div className={`flex justify-between p-2 px-2 shadow-md rounded items-center sticky w-full top-0 z-50 transition-all duration-500 ${!darkMode ? 'bg-gray-900 text-gray-200 border-gray-800' : 'bg-white text-gray-900 border-gray-300'}`}>
             <div className='font-mono text-xl'>
                 <h1 className="hover:text-indigo-500 transition-all duration-300">Portfolio</h1>
             </div>
