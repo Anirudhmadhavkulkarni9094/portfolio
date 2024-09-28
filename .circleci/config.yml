@@ -1,0 +1,55 @@
+version: 2.1
+
+# Define the executors (environments) to run the jobs.
+executors:
+  node-executor:
+    docker:
+      - image: cimg/node:current # Use the latest node image
+
+# Define the jobs to be executed in the pipeline
+jobs:
+  test:
+    executor: node-executor
+    steps:
+      - checkout # Step to checkout the code from GitHub
+      - restore_cache:
+          keys:
+            - node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
+            - node-deps-v1-{{ .Branch }}
+            - node-deps-v1
+      - run:
+          name: Install Node.js dependencies
+          command: npm ci
+      - save_cache:
+          key: node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
+          paths:
+            - ~/.npm
+      - run:
+          name: Run Tests
+          command: npm run test
+
+  lint:
+    executor: node-executor
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
+      - run:
+          name: Install Node.js dependencies
+          command: npm ci
+      - run:
+          name: Lint Code
+          command: npm run lint
+      - save_cache:
+          key: node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
+          paths:
+            - ~/.npm
+
+# Workflow to define the sequence of job executions.
+workflows:
+  version: 2
+  test-and-lint:
+    jobs:
+      - test
+      - lint
